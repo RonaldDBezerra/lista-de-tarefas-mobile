@@ -2,8 +2,9 @@ import Realm from "realm";
 
 import { RepositorySchema } from "../schemas/RepositorySchema";
 
-export function getRealm() {
-  return Realm.open({
-    schema: [RepositorySchema]
+export async function getRealm() {
+  return await Realm.open({
+    path: "taref-app",
+    schema: [RepositorySchema],
   });
 }
