@@ -1,10 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 
 import { Header } from '../../components/Header'
+import { getRealm } from '../../services/realme'
+import { TarefContext } from '../../context/TarefContext' 
+import { size } from 'lodash';
 
 import Icon from "react-native-vector-icons/MaterialIcons"
-
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import uuid from 'react-native-uuid';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { Alert } from 'react-native';
 
 import {
   Box,
@@ -23,16 +27,36 @@ import {
   Select,
 } from "native-base"
 
+
 export function Create(props) {
 
   const [date, setDate] = useState(new Date(1598051730000));
   const [show, setShow] = useState(false)
+  const {tarefEdit, getTarefId, toggleTaref, actionTaref, toggleLoading, loading} = useContext(TarefContext)
   
   const [title, setTitle] = useState('')
   const [responsible, setResponsible] = useState('selecionar')
   const [description, setDescription] = useState('')
   const [dateFormated,  setDateFormated] = useState('10/06/2002')
   const [status, setStatus] = useState("Aberta")
+  
+  useEffect(() => {
+    if (actionTaref === "edit") {
+      const {tarefId} = tarefEdit
+      setTitle(tarefId.title)
+      setResponsible(tarefId.responsible)
+      setDateFormated(tarefId.date)
+      setDescription(tarefId.description)
+      setStatus(tarefId.status)
+    } else if (actionTaref === "create") {
+      setTitle("")
+      setResponsible("Selecionar")
+      setDescription("")
+      setDateFormated("10/06/2002")
+      setStatus("Aberta")
+    }
+
+  }, [loading])
   
   const onChange = (event, selectedDate) => {
     const year = selectedDate.getFullYear()
@@ -48,6 +72,67 @@ export function Create(props) {
     setShow(false)
     setDateFormated(newFormat)
   };
+
+  const saveTaref = async () => {
+    const data = {
+      _id: uuid.v4(),
+      title,
+      responsible,
+      date: dateFormated,
+      description,
+      status
+    }
+
+    const realm = await getRealm();
+
+    try {
+
+      realm.write(() => {
+        const create = realm.create('Taref', data)
+
+      })
+
+      Alert.alert("cadastro", "cadastrado com sucesso")
+
+    } catch (e) {
+      console.log(e)
+    }
+
+
+
+    setTitle("")
+    setResponsible("Selecionar")
+    setDescription("")
+    setDateFormated("10/06/2002")
+    setStatus("Aberta")
+  }
+
+  const editTaref = async () => {
+    const data = {
+      _id: tarefEdit.tarefId._id,
+      title,
+      responsible,
+      date: dateFormated,
+      description,
+      status
+    }
+
+    const realm = await getRealm();
+
+    try {
+
+      realm.write(() => {
+        const response = realm.create('Taref', data, 'modified')
+        toggleLoading(!loading)
+      })
+
+      Alert.alert("Editar", "Editado com sucesso")
+
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  
 
   return(
     <ScrollView showsVerticalScrollIndicator={false}>
@@ -168,8 +253,8 @@ export function Create(props) {
         </Box>
         
         <Box marginLeft={0} padding={6} width={'393px'} backgroundColor={"white"}>
-            <Button backgroundColor={"#3a49f9"} borderRadius={"full"} height={'16'}>
-              <Heading color="white">Criar tarefa</Heading>
+            <Button onPress={(actionTaref === "create") ? saveTaref : editTaref} backgroundColor={"#3a49f9"} borderRadius={"full"} height={'16'}>
+              <Heading color="white">{(actionTaref === "create") ? 'Criar tarefa' : 'Editar Tarefa'}</Heading>
             </Button>
         </Box>
 

@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
+import { getRealm } from '../../services/realme'
+import { TarefContext } from '../../context/TarefContext'
 import {
   Box,
   Container,
@@ -8,54 +10,63 @@ import {
   Button,
   Flex,
   FlatList,
-  Icon,
-  SectionList,
   ScrollView
 } from "native-base"
 
 import { ListTaref } from '../../components/ListTaref'
 import { ListInfoTaref } from '../../components/ListInfoTaref'
+import { size } from 'lodash'
 
 export function Home(props) {
+
+  const [tarefDate, setTarefDate] = useState([{}])
+  const [data, setData] = useState([{}])
+  const {toggleTaref, loading, toggleLoading} = useContext(TarefContext)
+
+  useEffect(() => {
+    async function loadTaref() {
+      const realm = await getRealm()
+
+      const response = realm.objects('Taref')
+      
+      setTarefDate(response)
+
+      tarefCount()
+    }
+
+    loadTaref()
+  }, [loading])
+
+    const tarefCount = async () => {
+      const aberta = size(tarefDate.filter((elem) => elem.status === "Aberta"))
+      const emAndamento = size(tarefDate.filter((elem) => elem.status === "Em andamento"))
+      const todasAsTarefas = size(tarefDate)
+  
+      setData([{    
+        title: "Total de tarefas",
+        number: todasAsTarefas
+      },
+      {    
+        title: "Aberta",
+        number: aberta
+      }, 
+      {    
+        title: "Em andamento",
+        number: emAndamento
+      }, 
+    ])
+    }
+
+    const createTaref = (screen, action) => {
+      toggleTaref(action)
+      toggleLoading(!loading)
+      onChangeScreen(screen)
+    }
 
   const onChangeScreen = (screen) => {
     props.navigation.navigate(screen)
   }
 
-  const data = [
-  {
-    title: "Total de tarefas",
-    number: 10,
-    date: "10/06/22",
-    nome: "Ronald",
-    tarefa: "Desenvolver Componente",
-    status: "Aberta"
-  },
-  {
-    title: "Abertas",
-    number: 2,
-    date: "10/06/22",
-    nome: "Ronald",
-    tarefa: "Desenvolver Componente",
-    status: "Em andamento"
-  },
-  {
-    title: "Concluidas",
-    number: 3,
-    date: "10/06/22",
-    nome: "Ronald",
-    tarefa: "Desenvolver Componente",
-    status: "Concluida"
-  },
-  {
-    title: "Concluidas",
-    number: 3,
-    date: "10/06/22",
-    nome: "Ronald",
-    tarefa: "Desenvolver Componente",
-    status: "Concluida"
-  },
-]
 
   return(
     <Container safeArea marginLeft={0} marginTop={5}>
@@ -73,7 +84,7 @@ export function Home(props) {
           </Text>
         </Flex>
         <Flex marginLeft={'1'} marginTop={"2.5"}>
-          <Button borderRadius={'full'} padding={'4'} size={"sm"} width={"32"} onPress={() => onChangeScreen("create")}>+ Add tarefa</Button>
+          <Button borderRadius={'full'} padding={'4'} size={"sm"} width={"32"} onPress={() => createTaref("create", "create")}>+ Add tarefa</Button>
         </Flex>
       </Container>
 
@@ -107,8 +118,8 @@ export function Home(props) {
 
       <Flex marginLeft={5} width={'360px'}>
         <FlatList
-          data={data}
-          renderItem={({item}) => <ListInfoTaref item={item} />}
+          data={tarefDate}
+          renderItem={({item}) => <ListInfoTaref props={props} item={item}/>}
           />
       </Flex>
       </ScrollView>

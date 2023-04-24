@@ -1,14 +1,12 @@
-export class RepositorySchema {
-  static schema = {
-    name: "Repository",
-    primaryKey: "id",
+export const RepositorySchema = {
+    name: "Taref",
     properties: {
-      id: {type: 'int', indexed: true},
+      _id: {type: "string", indexed: true},
       title: "string",
       responsible: "string",
       date: "string",
       description: "string",
       status: "string"
-    }
-  }
+    },
+    primaryKey: "_id",
 }
