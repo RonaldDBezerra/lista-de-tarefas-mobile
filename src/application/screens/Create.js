@@ -1,30 +1,26 @@
-import React, { useState, useEffect, useRef, useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 
 import { Header } from '../../components/Header'
 import { getRealm } from '../../services/realme'
 import { TarefContext } from '../../context/TarefContext' 
-import { size } from 'lodash';
+import { Alert } from 'react-native';
 
 import Icon from "react-native-vector-icons/MaterialIcons"
 import uuid from 'react-native-uuid';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Alert } from 'react-native';
 
 import {
   Box,
-  Container,
-  Avatar,
   Heading,
   Text,
   Button,
   Flex,
-  FlatList,
-  SectionList,
   ScrollView,
   FormControl,
   Input,
   Divider,
   Select,
+  TextArea
 } from "native-base"
 
 
@@ -32,7 +28,7 @@ export function Create(props) {
 
   const [date, setDate] = useState(new Date(1598051730000));
   const [show, setShow] = useState(false)
-  const {tarefEdit, getTarefId, toggleTaref, actionTaref, toggleLoading, loading} = useContext(TarefContext)
+  const {tarefEdit, actionTaref, toggleLoading, loading} = useContext(TarefContext)
   
   const [title, setTitle] = useState('')
   const [responsible, setResponsible] = useState('selecionar')
@@ -48,7 +44,7 @@ export function Create(props) {
       setDateFormated(tarefId.date)
       setDescription(tarefId.description)
       setStatus(tarefId.status)
-    } else if (actionTaref === "create") {
+    } else {
       setTitle("")
       setResponsible("Selecionar")
       setDescription("")
@@ -57,8 +53,13 @@ export function Create(props) {
     }
 
   }, [loading])
+
+  const goBack = (screen) => {
+    toggleLoading(!loading)
+    onChangeScreen(screen)
+  }
   
-  const onChange = (event, selectedDate) => {
+  const changeDate = (_, selectedDate) => {
     const year = selectedDate.getFullYear()
     let month = selectedDate.getMonth() + 1
     let day = selectedDate.getDate()
@@ -68,12 +69,12 @@ export function Create(props) {
     
     const newFormat = `${day}/${month}/${year}`
 
-    setDate(selectedDate);
     setShow(false)
+    setDate(selectedDate);
     setDateFormated(newFormat)
   };
 
-  const saveTaref = async () => {
+  const creatTaref = async () => {
     const data = {
       _id: uuid.v4(),
       title,
@@ -88,11 +89,12 @@ export function Create(props) {
     try {
 
       realm.write(() => {
-        const create = realm.create('Taref', data)
-
-      })
+        realm.create('Taref', data)
+      });
 
       Alert.alert("cadastro", "cadastrado com sucesso")
+
+      goBack("home")
 
     } catch (e) {
       console.log(e)
@@ -105,6 +107,10 @@ export function Create(props) {
     setDescription("")
     setDateFormated("10/06/2002")
     setStatus("Aberta")
+  }
+  
+  const onChangeScreen = (screen) => {
+    props.navigation.navigate(screen)
   }
 
   const editTaref = async () => {
@@ -122,11 +128,13 @@ export function Create(props) {
     try {
 
       realm.write(() => {
-        const response = realm.create('Taref', data, 'modified')
+        realm.create('Taref', data, 'modified')
         toggleLoading(!loading)
       })
 
       Alert.alert("Editar", "Editado com sucesso")
+
+      goBack("home")
 
     } catch (e) {
       console.log(e)
@@ -136,7 +144,7 @@ export function Create(props) {
 
   return(
     <ScrollView showsVerticalScrollIndicator={false}>
-      <Box width={"510px"} backgroundColor={"#3a49f9"}>
+      <FormControl width={"510px"} backgroundColor={"#3a49f9"}>
 
         <Header props={props} />
 
@@ -184,20 +192,20 @@ export function Create(props) {
               value={date}
               mode='date'
               display='default'
-              onChange={onChange}
+              onChange={changeDate}
               />
             )}
             <Divider marginBottom={10} my="2" _light={{bg: "white"}} />
         </Box>
 
-        <Box borderTopRadius={'xl'} marginLeft={0} padding={6} width={'393px'} backgroundColor={"white"}>
+        <Box borderTopRadius={'xl'} marginLeft={0} padding={6} width={'411px'} backgroundColor={"white"}>
             <Text fontSize={'2xl'}>
               Descrição
             </Text>
-            <Input value={description} onChangeText={setDescription} marginTop={3} bold fontSize={22} borderWidth={1} borderColor={"gray.300"} borderRadius={'xl'}/>
+            <TextArea value={description} onChangeText={setDescription} marginTop={3} bold fontSize={22} borderWidth={1} borderColor={"gray.300"} borderRadius={'xl'}/>
         </Box>
 
-        <Box padding={6} width={'400px'} backgroundColor={"white"}>
+        <Box padding={6} width={'411px'} backgroundColor={"white"}>
             <Text marginBottom={3} fontSize={'2xl'}>
               Status
             </Text>
@@ -252,13 +260,13 @@ export function Create(props) {
             </Flex>
         </Box>
         
-        <Box marginLeft={0} padding={6} width={'393px'} backgroundColor={"white"}>
-            <Button onPress={(actionTaref === "create") ? saveTaref : editTaref} backgroundColor={"#3a49f9"} borderRadius={"full"} height={'16'}>
+        <Box marginLeft={0} padding={6} width={'411px'} backgroundColor={"white"}>
+            <Button onPress={(actionTaref === "create") ? creatTaref : editTaref} backgroundColor={"#3a49f9"} borderRadius={"full"} height={'16'}>
               <Heading color="white">{(actionTaref === "create") ? 'Criar tarefa' : 'Editar Tarefa'}</Heading>
             </Button>
         </Box>
 
-      </ Box>
+      </ FormControl>
     </ScrollView>
   )
 } 
