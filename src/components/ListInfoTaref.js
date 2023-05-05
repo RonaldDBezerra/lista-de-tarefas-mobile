@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
-import { getRealm } from '../services/realme'
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
+
+import { getRealm } from '../services/realme'
 import { TarefContext } from '../context/TarefContext' 
 
 import {
@@ -15,7 +16,8 @@ import {
   ZStack,
   Center,
   Menu,
-  Pressable
+  Pressable,
+  VStack
 } from "native-base"
 
 export function ListInfoTaref({item, props}) {
@@ -58,21 +60,22 @@ export function ListInfoTaref({item, props}) {
         </Pressable>
     )
   }
+
   return (
-    <Flex alignItems={"center"} direction='row' padding={5} borderRadius={'md'} height={'75px'} marginTop={4} width={"full"} backgroundColor={"#e5eafc"}>
-      <Container>
+    <VStack alignItems={"center"} direction='row' padding={5} borderRadius={'md'} height={'75px'} marginTop={4} width={"full"} backgroundColor={"#e5eafc"}>
+
         <Icon name={"clipboard-check-outline"} size={26}/>
-      </Container>
       
-      <Container marginLeft={4} marginTop={4} width={"140px"} height={"65px"}>
+      <Box marginLeft={4} marginTop={4} width={"140px"} height={"65px"}>
         <Heading fontSize={16}>{item.title}</Heading>
         <Text opacity={40}>{`${item.responsible} - ${item.date}`}</Text>
-      </Container>
+      </Box>
 
       <Container width={"full"}>
+
         <Flex direction='row' alignItems={"center"}>
             <Box
-              borderColor={"#6fea8b"} 
+              borderColor={"green.300"} 
               borderWidth={2} 
               borderRadius={'full'}
               marginLeft={"3px"} 
@@ -94,8 +97,8 @@ export function ListInfoTaref({item, props}) {
 
         </Flex>
 
-
       </Container>
-    </Flex>
+
+    </VStack>
   )
 }

@@ -8,9 +8,9 @@ import {
   Heading,
   Text,
   Button,
-  Flex,
   FlatList,
-  ScrollView
+  ScrollView,
+  VStack
 } from "native-base"
 
 import { ListTaref } from '../../components/ListTaref'
@@ -19,11 +19,12 @@ import { size } from 'lodash'
 
 export function Home(props) {
 
-  const [tarefDate, setTarefDate] = useState([{}])
+  const [tarefDate, setTarefDate] = useState([])
   const [data, setData] = useState([{}])
   const {toggleTaref, loading, toggleLoading} = useContext(TarefContext)
 
   useEffect(() => {
+
     async function loadTaref() {
       const realm = await getRealm()
 
@@ -35,9 +36,10 @@ export function Home(props) {
     }
 
     loadTaref()
+
   }, [loading])
 
-    const tarefCount = async () => {
+    const tarefCount = () => {
       const aberta = size(tarefDate.filter((elem) => elem.status === "Aberta"))
       const emAndamento = size(tarefDate.filter((elem) => elem.status === "Em andamento"))
       const todasAsTarefas = size(tarefDate)
@@ -69,60 +71,56 @@ export function Home(props) {
 
 
   return(
-    <Container safeArea marginLeft={0} marginTop={5}>
+    <VStack safeArea marginLeft={0} marginTop={5}>
       <Avatar marginLeft={5} size={50} bg="green.500" source={{
-        uri: "https://media.licdn.com/dms/image/D4D0BAQHHMDZtLlm1Qg/company-logo_200_200/0/1681754151318?e=1690416000&v=beta&t=5EbgdckZGcGSccfnwVsTFDT6lPIz9dzS5NUgkIZELx0"
+        uri: "https://img.freepik.com/vetores-premium/perfil-de-avatar-de-homem-no-icone-redondo_24640-14044.jpg?w=2000"
     }}/>
       <Container marginLeft={5} alignItems={"center"} flex={0} flexDirection={"row"} display={"flex"} width={"full"}>
-        <Flex marginTop={3} width={'56'}>
+
+        <Box marginTop={3} width={'56'}>
           <Heading fontSize={'4xl'}>
-            Olá Tiago!
+            Olá Usuário!
           </Heading>
 
           <Text bold fontSize={'md'} width={"md"} opacity={0.5}>
             Tenha um ótimo dia
           </Text>
-        </Flex>
-        <Flex marginLeft={'1'} marginTop={"2.5"}>
-          <Button borderRadius={'full'} padding={'4'} size={"sm"} width={"32"} onPress={() => createTaref("create", "create")}>+ Add tarefa</Button>
-        </Flex>
+        </Box>
+
+        <Box marginLeft={'1'} marginTop={"2.5"}>
+          <Button backgroundColor={"blue.500"} borderRadius={'full'} padding={'4'} size={"sm"} width={"32"} onPress={() => createTaref("create", "create")}>+ Add tarefa</Button>
+        </Box>
       </Container>
 
 
       <Container marginLeft={5}>
-        <Flex marginLeft={4} justifyContent={'space-between'} width={'80'} direction='row' marginTop={'10'}>
+        <Box alignItems={"center"} ml={4} justifyContent={'space-between'} width={'80'} direction='row' marginTop={'10'}>
           <Container>
             <Text fontSize={'xl'}>
               Minhas tarefas
             </Text>
           </Container>
-          <Container>
-            <Text fontSize={'xl'}>
-              Todas as tarefas
-            </Text>
-          </Container>
-        </Flex>
+        </Box>
       </Container>
   
+      <FlatList
+        data={data}
+        renderItem={({item}) => <ListTaref item={item} />} 
+        horizontal
+        showsHorizontalScrollIndicator={false}
+      />
 
-      <Flex width={'399px'}>
-          <FlatList
-            data={data}
-            renderItem={({item}) => <ListTaref item={item} />} 
-            horizontal
-            showsHorizontalScrollIndicator={false}
-          />
-      </Flex>
 
       <ScrollView width={"390px"} h="450px" showsVerticalScrollIndicator={false}>
 
-      <Flex marginLeft={5} width={'360px'}>
+      <Box marginLeft={5} marginBottom={"3px"} width={'100%'}>
         <FlatList
           data={tarefDate}
           renderItem={({item}) => <ListInfoTaref props={props} item={item}/>}
           />
-      </Flex>
+      </Box>
+
       </ScrollView>
-    </Container>
+    </VStack>
   )
 } 
