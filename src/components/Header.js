@@ -1,29 +1,23 @@
-import React, { useState, useEffect, useRef, useContext } from 'react'
+import React, { useContext } from 'react'
 import { TarefContext } from '../context/TarefContext' 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons"
 
 import {
-  Box,
   Container,
-  Avatar,
   Heading,
-  Text,
-  Button,
   Flex,
-  FlatList,
-  SectionList,
-  ScrollView
 } from "native-base"
 
 export function Header({props}) {
 
-  const {tarefEdit, getTarefId, toggleTaref, actionTaref, toggleLoading, loading} = useContext(TarefContext)
+  const {toggleLoading, loading} = useContext(TarefContext)
 
 
   const onChangeScreen = (screen) => {
     props.navigation.navigate(screen)
   }
-
+  
+  
   const goBack = (screen) => {
     toggleLoading(!loading)
     onChangeScreen(screen)
