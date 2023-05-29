@@ -44,4 +44,4 @@ Clonar e executar o app Lista de Tarefas em seu ambiente de desenvolvimento loca
   ## Link para a instalção do projeto na atual versão. Observação: Esse APK está com build para dispositivos Android
   
   
-  "https://expo.dev/accounts/ronalddev/projects/my-app/builds/d8d2d557-ca9e-403d-902f-46dd59f088c6](https://expo.dev/accounts/ronalddev/projects/my-app/builds/65092160-4d96-40eb-ac31-549c31e25819"
+  "https://expo.dev/accounts/ronalddev/projects/my-app/builds/65092160-4d96-40eb-ac31-549c31e25819"
