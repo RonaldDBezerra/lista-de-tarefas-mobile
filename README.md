@@ -27,13 +27,13 @@ Clonar e executar o app Lista de Tarefas em seu ambiente de desenvolvimento loca
   ### Observação: Nesse momento você vai rodar a build compativel com o sistema operacional do seu smartphone.
   
   
-  "react-native run-android"
+  "npx react-native run-android"
   
   
   OU
   
   
-  "react-native run-ios"
+  "npx react-native run-ios"
   
   
   ## Link para a instalção do projeto na atual versão. Observação: Esse APK está com build para dispositivos Android
