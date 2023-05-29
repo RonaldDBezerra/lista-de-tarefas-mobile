@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { Animated, View, ScrollView, StyleSheet, ImageBackground, TouchableOpacity, SafeAreaView } from 'react-native'
-import { Title, Text } from 'react-native-paper'
+import { Container, VStack } from 'native-base'
+import React from 'react'
+import Lottie from 'lottie-react-native';
 
 export function Notification(props) {
   return(
-    <View>
-      <SafeAreaView>
-        <Title>notification</Title>
-      </SafeAreaView>
-    </View>
+      <VStack backgroundColor={"white"} safeArea h={'full'} w={'full'} justifyContent={"center"} alignContent={"center"} alignItems={"center"}>
+          <Container w={"500px"} h={"500px"}>
+              <Lottie source={require("../../asserts/109661-under-construction.json")} autoPlay loop />
+          </Container>
+      </VStack>
   )
 } 
