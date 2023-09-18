@@ -1,0 +1,23 @@
+name: Build APK
+on:
+    push:
+        branches:
+            - master
+jobs:
+    publish:
+        name: install and build
+        runs-on: ubunto-latest
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v2
+              with:
+                node-version: 18.x
+            - name: Setup Expo and EAS
+              uses: expo/expo-github-action@v7
+              with:
+                expo-version: 5.x
+                eas-version: latest
+            - name: Install dependecies
+              run: yarn install
+            - name: Build on EAS
+              run: eas build -p android --profile development 
