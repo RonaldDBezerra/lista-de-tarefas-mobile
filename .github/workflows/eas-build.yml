@@ -20,4 +20,4 @@ jobs:
             - name: Install dependecies
               run: yarn install
             - name: Build on EAS
-              run: eas build -p android --profile development 
+              run: expo login -u ${{secrets.LOGIN}} -p ${{secrets.PASSWORD}} and eas build -p android --profile development
