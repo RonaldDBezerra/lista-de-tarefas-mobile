@@ -40,8 +40,3 @@ Clonar e executar o app Lista de Tarefas em seu ambiente de desenvolvimento loca
   
   
   "npx react-native start"
-  
-  ## Link para a instalação do projeto na atual versão. Observação: Esse APK está com build para dispositivos Android
-  
-  
-  "https://expo.dev/accounts/ronalddev/projects/my-app/builds/65092160-4d96-40eb-ac31-549c31e25819"
